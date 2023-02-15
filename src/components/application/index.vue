@@ -7,7 +7,14 @@
     @mousedown="onMouseDown"
     @mouseup="onMouseUp"
   >
-    <div class="application-content"></div>
+    <div class="application-content">
+      <i v-if="data.icon" class="application-icon">
+        <img :src="backDynamicUrl(data.icon)" />
+      </i>
+      <Weather
+        v-if="data.type === 'component' && data.component === 'weather'"
+      />
+    </div>
     <div class="title">{{ data.title }}</div>
   </div>
 </template>
@@ -16,9 +23,13 @@
 import { defineComponent, computed, ref } from "vue";
 import { adjustAppsPos, sortList } from "@/utils/appUtils";
 import { useAppStore } from "@/stores";
+import Weather from "./weather.vue";
 import _ from "lodash";
 
 export default defineComponent({
+  components: {
+    Weather,
+  },
   props: {
     data: Object,
   },
@@ -28,6 +39,9 @@ export default defineComponent({
     const size = computed(() => {
       return props.data.size;
     });
+
+    let clickStatus = true;
+
     const id = props.data.id;
     var x = 0;
     var y = 0;
@@ -35,6 +49,9 @@ export default defineComponent({
     var clientY = 0;
     var newApps;
     const onMouseDown = (e) => {
+      // 标记点击状态
+      clickStatus = true;
+
       clientX = e.clientX;
       clientY = e.clientY;
       x =
@@ -52,6 +69,9 @@ export default defineComponent({
     };
 
     const mousemove = (event) => {
+      // 标记点击状态
+      clickStatus = false;
+
       const diffX = event.clientX - clientX;
       const diffY = event.clientY - clientY;
       const left = x + diffX;
@@ -67,7 +87,9 @@ export default defineComponent({
     };
 
     const onMouseUp = () => {
-      if(!newApps) newApps = _.cloneDeep(appStore.getApps)
+      if (clickStatus) onAppClick();
+
+      if (!newApps) newApps = _.cloneDeep(appStore.getApps);
 
       emit("posChanged", { newApps, changeId: id });
       appStore.setApps(newApps);
@@ -78,17 +100,36 @@ export default defineComponent({
       window.removeEventListener("mousemove", mousemove);
     };
 
+    const backDynamicUrl = (icon) => {
+      console.log(icon);
+      return new URL(
+        `../../assets/applicationIcon/${icon}.png`,
+        import.meta.url
+      ).href;
+    };
+
+    const onAppClick = () => {
+      const type = props.data.type;
+      switch (true) {
+        case type === "website":
+          window.open(props.data.url, "_blank");
+      }
+    };
+
     return {
       size,
       application,
       onMouseDown,
       onMouseUp,
+      backDynamicUrl,
+      onAppClick,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
+$base: ".application";
 .application-item {
   position: absolute;
   transition: all 0.3s;
@@ -96,6 +137,7 @@ export default defineComponent({
   top: 0;
   user-select: none;
   z-index: 1;
+  overflow: hidden;
 
   .application-content-style {
     background-color: #fff;
@@ -114,7 +156,7 @@ export default defineComponent({
       height: 194px;
       margin: 0 13px;
       transition: all 0.3s;
-      padding: 15px;
+      // padding: 15px;
       cursor: pointer;
       @extend .application-content-style;
     }
@@ -139,6 +181,7 @@ export default defineComponent({
   }
 
   .title {
+    cursor: pointer;
     text-align: center;
     color: #fff;
     height: 24px;
@@ -150,6 +193,21 @@ export default defineComponent({
     white-space: nowrap;
     text-shadow: 0 2px 5px rgb(0 0 0 / 8%);
     font-weight: 450;
+  }
+
+  #{$base}-content {
+    overflow: hidden;
+  }
+
+  #{$base}-icon {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    img {
+      height: 100%;
+      width: 100%;
+      pointer-events: none;
+    }
   }
 }
 </style>
