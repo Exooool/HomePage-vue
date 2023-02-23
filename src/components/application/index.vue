@@ -1,30 +1,31 @@
 <template>
   <div
-    :id="data.id"
+    :id="data?.id"
     ref="application"
-    :class="['application-item', data.size]"
-    :style="`transform: translate(${data.x}px,${data.y}px)`"
+    :class="['application-item', data?.size]"
+    :style="`transform: translate(${data?.x}px,${data?.y}px)`"
     @mousedown="onMouseDown"
     @mouseup="onMouseUp"
   >
     <div class="application-content">
-      <i v-if="data.icon" class="application-icon">
+      <i v-if="data?.icon" class="application-icon">
         <img :src="backDynamicUrl(data.icon)" />
       </i>
       <Weather
-        v-if="data.type === 'component' && data.component === 'weather'"
+        v-if="data?.type === 'component' && data.component === 'weather'"
       />
     </div>
-    <div class="title">{{ data.title }}</div>
+    <div class="title">{{ data?.title }}</div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, computed, ref } from "vue";
 import { adjustAppsPos, sortList } from "@/utils/appUtils";
 import { useAppStore } from "@/stores";
-import Weather from "./weather.vue";
+import Weather from "./weather/weather.vue";
 import _ from "lodash";
+import type { app } from "@/types/app";
 
 export default defineComponent({
   components: {
@@ -37,18 +38,19 @@ export default defineComponent({
     const application = ref();
     const appStore = useAppStore();
     const size = computed(() => {
-      return props.data.size;
+      return props.data?.size ?? "small";
     });
 
     let clickStatus = true;
 
-    const id = props.data.id;
+    // eslint-disable-next-line vue/no-setup-props-destructure
+    const id = props.data?.id;
     var x = 0;
     var y = 0;
     var clientX = 0;
     var clientY = 0;
-    var newApps;
-    const onMouseDown = (e) => {
+    var newApps: app[];
+    const onMouseDown = (e: { clientX: number; clientY: number }) => {
       // 标记点击状态
       clickStatus = true;
 
@@ -68,7 +70,7 @@ export default defineComponent({
       window.addEventListener("mousemove", mousemove);
     };
 
-    const mousemove = (event) => {
+    const mousemove = (event: { clientX: number; clientY: number }) => {
       // 标记点击状态
       clickStatus = false;
 
@@ -100,7 +102,7 @@ export default defineComponent({
       window.removeEventListener("mousemove", mousemove);
     };
 
-    const backDynamicUrl = (icon) => {
+    const backDynamicUrl = (icon: any) => {
       console.log(icon);
       return new URL(
         `../../assets/applicationIcon/${icon}.png`,
@@ -109,10 +111,10 @@ export default defineComponent({
     };
 
     const onAppClick = () => {
-      const type = props.data.type;
+      const type = props.data?.type;
       switch (true) {
         case type === "website":
-          window.open(props.data.url, "_blank");
+          window.open(props.data?.url, "_blank");
       }
     };
 

@@ -24,6 +24,7 @@
         <div class="more-url-box" :class="moreUrlBoxVisible ? 'show' : ''">
           <div
             v-for="(item, index) in searchEngineList"
+            :key="index"
             class="more-url-item"
             @click="searchEngineChoose(index)"
           >
@@ -45,15 +46,8 @@
   </div>
 </template>
 
-<script>
-import {
-  defineComponent,
-  reactive,
-  toRefs,
-  ref,
-  computed,
-  onMounted,
-} from "vue";
+<script lang="ts">
+import { defineComponent, reactive, toRefs, ref, onMounted } from "vue";
 import Application from "@/components/application/index.vue";
 import { resolveAppPos, initApps } from "@/utils/appUtils";
 import { config } from "@/config/config";
@@ -79,22 +73,22 @@ export default defineComponent({
           baseUrl: "https://www.google.com/",
           title: "谷歌",
         },
-      ],
+      ] as Record<string, any>[],
       searchEngineIndex: 0,
       focus: false,
       moreUrlBoxVisible: false,
-      apps: [],
+      apps: [] as any[],
     });
 
     const onFocusInput = () => {
       state.focus = true;
     };
 
-    const onInputClick = (e) => {
+    const onInputClick = () => {
       // console.log("input", e);
     };
 
-    const onBodyClick = (e) => {
+    const onBodyClick = () => {
       // console.log("body", e);
       state.focus = false;
     };
@@ -103,7 +97,7 @@ export default defineComponent({
      * @description 获取搜索引擎点击的index
      * @param {number} index
      */
-    const searchEngineChoose = (index) => {
+    const searchEngineChoose = (index: any) => {
       state.searchEngineIndex = index;
     };
 
@@ -111,27 +105,27 @@ export default defineComponent({
      *
      * @param {Array} newApps
      */
-    const autoSortApps = ({ newApps, changeId }) => {
+    const autoSortApps = ({ newApps, changeId }: Record<string, any>) => {
       const resolvedApps = resolveAppPos(newApps);
       resolvedApps.forEach((app) => {
         if (app.id !== changeId) {
           const appDom = document.getElementById(app.id);
-          appDom.style.transform = `translate(${app.x}px,${app.y}px)`;
+          appDom!.style.transform = `translate(${app.x}px,${app.y}px)`;
         }
       });
     };
 
     /**
-     * 
-     * @param {*} param0 
+     *
+     * @param {*} param0
      */
-    const sortChangedApp = ({ newApps, changeId }) => {
+    const sortChangedApp = ({ newApps, changeId }: any) => {
       // console.log('changed')
       const resolvedApps = resolveAppPos(newApps);
       resolvedApps.forEach((app) => {
         if (app.id === changeId) {
           const appDom = document.getElementById(app.id);
-          appDom.style.transform = `translate(${app.x}px,${app.y}px)`;
+          appDom!.style.transform = `translate(${app.x}px,${app.y}px)`;
         }
       });
     };

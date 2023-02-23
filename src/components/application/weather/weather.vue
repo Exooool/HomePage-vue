@@ -1,5 +1,5 @@
 <template>
-  <div class="weather-box">
+  <div class="weather-box" @click="fullScreen">
     <div class="position">罗湖</div>
     <div class="tempreture">14℃</div>
     <div class="description">
@@ -9,13 +9,21 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script lang="ts">
+import { defineComponent, reactive, toRefs } from "vue";
+import WeatherBox from "./weather";
 
 export default defineComponent({
   setup() {
-    // todo
-    return {};
+    const state = reactive({});
+
+    const fullScreen = () => {
+      WeatherBox({});
+    };
+    return {
+      ...toRefs(state),
+      fullScreen,
+    };
   },
 });
 </script>
@@ -42,8 +50,8 @@ export default defineComponent({
     font-size: 32px;
   }
 
-  .description{
-    .title{
+  .description {
+    .title {
       margin-bottom: 10px;
     }
   }

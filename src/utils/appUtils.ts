@@ -1,3 +1,4 @@
+import type { app } from "@/types/app";
 import _ from "lodash";
 // 生成唯一ID
 function generateRandom() {
@@ -9,7 +10,7 @@ function generateRandom() {
  * @param {Array} apps
  * @returns
  */
-export const initApps = (apps) => {
+export const initApps = (apps: app[]) => {
   return apps.map((app) => {
     return {
       ...app,
@@ -22,7 +23,7 @@ export const initApps = (apps) => {
  * @description 解析每个app位置所在
  * @param {Array} apps
  */
-export const resolveAppPos = (apps) => {
+export const resolveAppPos = (apps: app[]) => {
   // app宽高
   const appMainHeight = 480;
   const appMainWidth = 960;
@@ -31,14 +32,14 @@ export const resolveAppPos = (apps) => {
     large: 240,
   };
 
-  const flagList = [];
+  const flagList: boolean[] = [];
   const resolvedApps = apps.map((app) => {
     let index = 0;
 
     while (flagList[index]) {
       ++index;
     }
-    let rows = parseInt(index / 8);
+    let rows = Math.trunc(index / 8);
     if (app.size === "small") {
       flagList[index] = true;
     } else if (app.size === "large") {
@@ -65,9 +66,9 @@ export const resolveAppPos = (apps) => {
  * @param {number} top
  * @returns index
  */
-export const adjustAppsPos = (index, left, top) => {
-  const leftIndex = parseInt(left / 120);
-  const topIndex = parseInt(top / 120) * 8;
+export const adjustAppsPos = (index: number, left: number, top: number) => {
+  const leftIndex = Math.trunc(left / 120);
+  const topIndex = Math.trunc(top / 120) * 8;
   return index + leftIndex + topIndex;
 };
 
@@ -77,7 +78,7 @@ export const adjustAppsPos = (index, left, top) => {
  * @param {number} newIndex
  * @param {Array} list
  */
-export const sortList = (oldIndex, newIndex, list) => {
+export const sortList = (oldIndex: number, newIndex: number, list: any[]) => {
   const cloneList = _.cloneDeep(list);
   if (oldIndex > newIndex) {
     const sortObj = cloneList.splice(oldIndex, 1);
