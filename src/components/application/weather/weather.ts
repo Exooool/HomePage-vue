@@ -1,5 +1,5 @@
 import { render, createVNode } from "vue";
-import WeatherConstructor from "./WeatherConstructor.vue";
+import WeatherConstructor from "./weatherBox.vue";
 
 const WeatherInstacne = new Map();
 

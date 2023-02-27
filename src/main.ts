@@ -13,6 +13,6 @@ const app = createApp(App);
 
 app.use(pinia);
 app.use(router);
-app.use(createVuestic);
+app.use(createVuestic());
 
 app.mount("#app");

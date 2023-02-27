@@ -141,6 +141,10 @@ $base: ".application";
   z-index: 1;
   overflow: hidden;
 
+  &:hover > .application-content {
+    transform: translateY(-10px);
+  }
+
   .application-content-style {
     background-color: #fff;
     border-radius: 20px;
@@ -177,6 +181,7 @@ $base: ".application";
       background-size: cover;
       background-position: 50%;
       background-color: hsla(0, 0%, 100%, 0.1);
+      transition: all 0.3s;
       cursor: pointer;
       @extend .application-content-style;
     }
