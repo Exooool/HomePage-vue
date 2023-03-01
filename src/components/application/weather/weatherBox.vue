@@ -61,7 +61,7 @@
               <span class="time">{{ item.time }}</span>
               <span class="high-temperature">{{ item.highTemp }}℃</span>
               <span class="low-temperature">{{ item.lowTemp }}℃</span>
-              <span class="weather-icon"> </span>
+              <span class="weather-icon"> <i-wi-day-sunny /></span>
             </div>
           </div>
         </div>
@@ -78,9 +78,15 @@ export default defineComponent({
   emits: ["vanish"],
   setup(props, { emit }) {
     const state = reactive({
-      hoursForecastList: [{ time: "23:00", currentTemp: 17, weather: "" }],
+      hoursForecastList: [
+        { time: "23:00", currentTemp: 17, weather: "" },
+        { time: "23:00", currentTemp: 17, weather: "" },
+        { time: "23:00", currentTemp: 17, weather: "" },
+      ],
       daysForecastList: [
-        { time: "23:00", highTemp: 17, lowTemp: 12, weather: "" },
+        { time: "02-27", highTemp: 17, lowTemp: 12, weather: "" },
+        { time: "02-28", highTemp: 17, lowTemp: 12, weather: "" },
+        { time: "02-29", highTemp: 17, lowTemp: 12, weather: "" },
       ],
     });
     const onClose = () => {
@@ -178,6 +184,12 @@ export default defineComponent({
         }
 
         .current-temperature {
+          font-size: 22px;
+          margin-bottom: 10px;
+        }
+
+        .high-temperature {
+          font-size: 22px;
           margin-bottom: 10px;
         }
 
@@ -192,6 +204,10 @@ export default defineComponent({
       padding: 16px;
       border-radius: 6px;
       margin: 20px 0;
+
+      .title {
+        font-weight: bold;
+      }
     }
   }
 }

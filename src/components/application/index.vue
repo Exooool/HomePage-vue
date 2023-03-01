@@ -14,6 +14,10 @@
       <Weather
         v-if="data?.type === 'component' && data.component === 'weather'"
       />
+      <ToDo v-if="data?.type === 'component' && data.component === 'todo'" />
+      <Calender
+        v-if="data?.type === 'component' && data.component === 'calendar'"
+      />
     </div>
     <div class="title">{{ data?.title }}</div>
   </div>
@@ -26,10 +30,14 @@ import { useAppStore } from "@/stores";
 import Weather from "./weather/weather.vue";
 import _ from "lodash";
 import type { app } from "@/types/app";
+import ToDo from "./todo/todo.vue";
+import Calender from "./calender/calendar.vue";
 
 export default defineComponent({
   components: {
     Weather,
+    ToDo,
+    Calender,
   },
   props: {
     data: Object,
@@ -146,7 +154,7 @@ $base: ".application";
   }
 
   .application-content-style {
-    background-color: #fff;
+    // background-color: #fff;
     border-radius: 20px;
     box-shadow: 0 2px 5px rgb(0 0 0 / 8%);
     margin: 0 13px;
