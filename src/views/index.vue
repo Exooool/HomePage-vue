@@ -8,6 +8,11 @@
       />
     </div>
     <div class="index-content">
+      <!-- 设置 -->
+      <div class="setting-container">
+        <i-ic-baseline-settings />
+      </div>
+      <!-- 搜索框 -->
       <div
         class="index-input-box"
         :class="focus ? 'focus' : ''"
@@ -33,7 +38,7 @@
           </div>
         </div>
       </div>
-      <div class="application-box">
+      <div class="application-box" :class="focus ? 'vanish' : ''">
         <application
           v-for="(item, index) in apps"
           :key="index"
@@ -189,6 +194,13 @@ export default defineComponent({
     position: relative;
     height: 100vh;
     width: 100vw;
+    .setting-container {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      color: white;
+    }
+
     // 输入框
     .index-input-box {
       position: absolute;
@@ -268,6 +280,7 @@ export default defineComponent({
         .title {
           flex-grow: 1;
           display: block;
+          margin-top: 5px;
         }
 
         &:hover {
@@ -283,6 +296,12 @@ export default defineComponent({
       height: 480px;
       width: 960px;
       transform: translate(-50%, calc(-50% + 100px));
+
+      &.vanish {
+        transition: all 0.2s;
+        opacity: 0;
+        z-index: -1;
+      }
     }
   }
 }
