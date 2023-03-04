@@ -11,7 +11,11 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Application: typeof import('./src/components/application/index.vue')['default']
     Calendar: typeof import('./src/components/application/calender/calendar.vue')['default']
+    CalendarBox: typeof import('./src/components/application/calender/calendarBox.vue')['default']
     IIcBaselineSettings: typeof import('~icons/ic/baseline-settings')['default']
+    ISystemUiconsAlignVertical: typeof import('~icons/system-uicons/align-vertical')['default']
+    ISystemUiconsArrowLeft: typeof import('~icons/system-uicons/arrow-left')['default']
+    ISystemUiconsArrowRight: typeof import('~icons/system-uicons/arrow-right')['default']
     IWiDaySunny: typeof import('~icons/wi/day-sunny')['default']
     IWiMoonWaxingCrescent6: typeof import('~icons/wi/moon-waxing-crescent6')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

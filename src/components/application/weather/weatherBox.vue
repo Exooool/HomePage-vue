@@ -1,6 +1,10 @@
 <template>
-  <div class="weather-fullscreen-cover" @click="onClose">
-    <div class="weather-fullscreen-dialog" @click.stop>
+  <div class="weather-box-wrapper box-cover" @click="onClose">
+    <div
+      class="weather-box"
+      :class="visible ? 'visible' : 'hidden'"
+      @click.stop
+    >
       <div class="header">
         <div class="position">罗湖</div>
       </div>
@@ -71,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from "vue";
+import { defineComponent, reactive, ref, toRefs } from "vue";
 
 export default defineComponent({
   components: {},
@@ -89,12 +93,16 @@ export default defineComponent({
         { time: "02-29", highTemp: 17, lowTemp: 12, weather: "" },
       ],
     });
+
+    const visible = ref(false);
+
     const onClose = () => {
       emit("vanish");
     };
 
     return {
       ...toRefs(state),
+      visible,
       onClose,
     };
   },
@@ -102,112 +110,104 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.weather-fullscreen {
-  &-cover {
-    z-index: 100;
-    top: 0;
-    left: 0;
-    position: fixed;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba($color: #000000, $alpha: 0.46);
-    backdrop-filter: blur(5px);
-    // cursor: pointer;
+.weather-box {
+  position: relative;
+  color: white;
+  font-weight: bold;
+  height: 640px;
+  width: 820px;
+  opacity: 0;
+  transform: scale(0.75);
+  transition: all 0.2s;
+  border-radius: 12px;
+  padding: 24px;
+  background-image: linear-gradient(
+    0deg,
+    rgb(56, 127, 220) 0%,
+    rgb(6, 81, 172) 100%
+  );
+
+  &.visible {
+    transform: scale(1);
+    opacity: 1;
   }
 
-  &-dialog {
-    position: relative;
-    color: white;
-    font-weight: bold;
-    height: 640px;
-    width: 820px;
-    border-radius: 12px;
-    padding: 24px;
-    background-image: linear-gradient(
-      0deg,
-      rgb(56, 127, 220) 0%,
-      rgb(6, 81, 172) 100%
-    );
-    .header {
-      height: 36px;
-      margin-bottom: 14px;
-      line-height: 36px;
-    }
-    .content {
-      height: calc(100% - 50px);
-      overflow-y: scroll;
-    }
+  .header {
+    height: 36px;
+    margin-bottom: 14px;
+    line-height: 36px;
+  }
+  .content {
+    height: calc(100% - 50px);
+    overflow-y: scroll;
+  }
 
-    .basic-details {
-      .position {
-        font-size: 18px;
-      }
-      .tempreture {
-        font-size: 76px;
-      }
-
-      .description {
-        font-size: 18px;
-        .title {
-          margin: 10px 0;
-        }
-      }
-    }
-
-    .other-details {
-      margin-top: 40px !important;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      column-gap: 20px;
-      row-gap: 20px;
+  .basic-details {
+    .position {
       font-size: 18px;
-
-      &-item {
-        display: flex;
-        justify-content: space-between;
-      }
+    }
+    .tempreture {
+      font-size: 76px;
     }
 
-    .forecast-list {
-      .forecast-item {
-        padding: 12px 20px;
-        display: inline-flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-        .time {
-          margin-bottom: 10px;
-        }
-
-        .current-temperature {
-          font-size: 22px;
-          margin-bottom: 10px;
-        }
-
-        .high-temperature {
-          font-size: 22px;
-          margin-bottom: 10px;
-        }
-
-        // .weather-icon {
-        //   margin-bottom: 10px;
-        // }
-      }
-    }
-
-    .details-container {
-      background: rgba($color: #fff, $alpha: 0.05);
-      padding: 16px;
-      border-radius: 6px;
-      margin: 20px 0;
-
+    .description {
+      font-size: 18px;
       .title {
-        font-weight: bold;
+        margin: 10px 0;
       }
+    }
+  }
+
+  .other-details {
+    margin-top: 40px !important;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 20px;
+    row-gap: 20px;
+    font-size: 18px;
+
+    &-item {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .forecast-list {
+    .forecast-item {
+      padding: 12px 20px;
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .time {
+        margin-bottom: 10px;
+      }
+
+      .current-temperature {
+        font-size: 22px;
+        margin-bottom: 10px;
+      }
+
+      .high-temperature {
+        font-size: 22px;
+        margin-bottom: 10px;
+      }
+
+      // .weather-icon {
+      //   margin-bottom: 10px;
+      // }
+    }
+  }
+
+  .details-container {
+    background: rgba($color: #fff, $alpha: 0.05);
+    padding: 16px;
+    border-radius: 6px;
+    margin: 20px 0;
+
+    .title {
+      font-weight: bold;
     }
   }
 }

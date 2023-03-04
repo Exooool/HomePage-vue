@@ -1,10 +1,10 @@
 import { render, createVNode, type ComponentPublicInstance } from "vue";
-import WeatherConstructor from "./weatherBox.vue";
+import CalendarConstructor from "./calendarBox.vue";
 
-const WeatherInstacne = new Map();
+const CalendarInstacne = new Map();
 
 const initInstance = (props: any, container: HTMLElement) => {
-  const vnode = createVNode(WeatherConstructor, props);
+  const vnode = createVNode(CalendarConstructor, props);
   render(vnode, container);
   document.body.appendChild(container.firstElementChild!);
   return vnode.component;
@@ -14,7 +14,7 @@ const genContainer = () => {
   return document.createElement("div");
 };
 
-const showWeather = (options: any) => {
+const showCalendar = (options: any) => {
   const container = genContainer();
   options.onVanish = () => {
     vm.visible = false;
@@ -34,14 +34,13 @@ const showWeather = (options: any) => {
   setTimeout(() => {
     vm.visible = true;
   });
-
   return vm;
 };
 
-async function WeatherBox(options: any) {
-  const vm = showWeather(options);
+async function CalendarBox(options: any) {
+  const vm = showCalendar(options);
 
-  WeatherInstacne.set(vm, {});
+  CalendarInstacne.set(vm, {});
 }
 
-export default WeatherBox;
+export default CalendarBox;
