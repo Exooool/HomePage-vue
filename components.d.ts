@@ -13,7 +13,7 @@ declare module '@vue/runtime-core' {
     Calendar: typeof import('./src/components/application/calender/calendar.vue')['default']
     CalendarBox: typeof import('./src/components/application/calender/calendarBox.vue')['default']
     IIcBaselineSettings: typeof import('~icons/ic/baseline-settings')['default']
-    ISystemUiconsAlignVertical: typeof import('~icons/system-uicons/align-vertical')['default']
+    ISystemUiconsAlignVertical: typeof import("~icons/system-uicons/align-vertical")["default"]
     ISystemUiconsArrowLeft: typeof import('~icons/system-uicons/arrow-left')['default']
     ISystemUiconsArrowRight: typeof import('~icons/system-uicons/arrow-right')['default']
     IWiDaySunny: typeof import('~icons/wi/day-sunny')['default']
