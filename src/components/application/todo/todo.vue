@@ -1,5 +1,5 @@
 <template>
-  <div class="todo-cell" @click="fullScreen">
+  <div class="todo-cell">
     <div class="todo-header">
       <span class="title">待办事项</span>
     </div>

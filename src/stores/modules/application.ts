@@ -13,6 +13,10 @@ const useAppStore = defineStore("application", {
     setApps(apps: app[]) {
       this.apps = apps;
     },
+    delApp(appId: string) {
+      const appIndex = this.apps.findIndex((app) => app.id === appId);
+      this.apps.slice(appIndex, 1);
+    },
   },
 });
 

@@ -4,6 +4,7 @@
     ref="application"
     :class="['application-item', data?.size]"
     :style="`transform: translate(${data?.x}px,${data?.y}px)`"
+    @contextmenu.stop="rightClick"
     @mousedown="onMouseDown"
     @mouseup="onMouseUp"
   >
@@ -12,10 +13,15 @@
         <img :src="backDynamicUrl(data.icon)" />
       </i>
       <Weather
+        ref="weatherRef"
         v-if="data?.type === 'component' && data.component === 'weather'"
       />
-      <ToDo v-if="data?.type === 'component' && data.component === 'todo'" />
+      <ToDo
+        ref="todoRef"
+        v-if="data?.type === 'component' && data.component === 'todo'"
+      />
       <Calender
+        ref="calenderRef"
         v-if="data?.type === 'component' && data.component === 'calendar'"
       />
     </div>
@@ -45,6 +51,10 @@ export default defineComponent({
   setup(props, { emit }) {
     const application = ref();
     const appStore = useAppStore();
+    const weatherRef = ref();
+    const todoRef = ref();
+    const calenderRef = ref();
+
     const size = computed(() => {
       return props.data?.size ?? "small";
     });
@@ -58,7 +68,8 @@ export default defineComponent({
     var clientX = 0;
     var clientY = 0;
     var newApps: app[];
-    const onMouseDown = (e: { clientX: number; clientY: number }) => {
+    const onMouseDown = (e: MouseEvent) => {
+      if (e.button !== 0) return;
       // 标记点击状态
       clickStatus = true;
 
@@ -78,7 +89,7 @@ export default defineComponent({
       window.addEventListener("mousemove", mousemove);
     };
 
-    const mousemove = (event: { clientX: number; clientY: number }) => {
+    const mousemove = (event: MouseEvent) => {
       // 标记点击状态
       clickStatus = false;
 
@@ -96,8 +107,8 @@ export default defineComponent({
       // _.throttle(() => {}, 500);
     };
 
-    const onMouseUp = () => {
-      if (clickStatus) onAppClick();
+    const onMouseUp = (e: MouseEvent) => {
+      if (clickStatus && e.button === 0) onAppClick();
 
       if (!newApps) newApps = _.cloneDeep(appStore.getApps);
 
@@ -120,19 +131,40 @@ export default defineComponent({
 
     const onAppClick = () => {
       const type = props.data?.type;
-      switch (true) {
-        case type === "website":
-          window.open(props.data?.url, "_blank");
+      if (type === "website") {
+        window.open(props.data?.url, "_blank");
+      } else if (type === "component") {
+        const comp = props.data?.component;
+        switch (true) {
+          case comp === "weather":
+            weatherRef.value.fullScreen();
+            break;
+          case comp === "todo":
+            todoRef.value.fullScreen();
+            break;
+          case comp === "calendar":
+            calenderRef.value.fullScreen();
+            break;
+        }
       }
+    };
+
+    const rightClick = (e: MouseEvent) => {
+      e.preventDefault();
+      console.log(e);
     };
 
     return {
       size,
       application,
+      weatherRef,
+      todoRef,
+      calenderRef,
       onMouseDown,
       onMouseUp,
       backDynamicUrl,
       onAppClick,
+      rightClick,
     };
   },
 });

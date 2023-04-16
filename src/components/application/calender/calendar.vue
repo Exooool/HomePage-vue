@@ -1,5 +1,5 @@
 <template>
-  <div class="calender-cell" @click="fullScreen">
+  <div class="calender-cell">
     <div class="calender-date">{{ `${monthZH[currentMonth - 1]}月` }}</div>
     <div class="calender-content">
       <div class="date-weekday">
@@ -137,9 +137,10 @@ export default defineComponent({
   flex-direction: column;
   padding: 20px;
   background-color: #fff;
+  box-sizing: border-box;
 
   .calender-date {
-    margin-bottom: 10px;
+    // margin-bottom: 10px;
     font-size: 14px;
     font-weight: bold;
     color: red;

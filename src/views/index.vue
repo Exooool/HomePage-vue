@@ -1,5 +1,10 @@
 <template>
-  <div class="index-container" @contextmenu.prevent @click="onBodyClick">
+  <div
+    class="index-container"
+    @contextmenu.prevent="rightClick"
+    @mousedown="onMouseDown"
+    @click="onBodyClick"
+  >
     <div class="background-box" :class="focus ? 'focus' : ''">
       <!-- <video id="backVideo" autoplay loop muted></video> -->
       <img
@@ -8,15 +13,12 @@
       />
     </div>
     <div class="index-content">
-      <!-- 设置 -->
-      <div class="setting-container">
-        <i-ic-baseline-settings />
-      </div>
       <!-- 搜索框 -->
       <div
         class="index-input-box"
         :class="focus ? 'focus' : ''"
         @click.stop="onInputClick"
+        @contextmenu.stop="preventDefault"
       >
         <button
           class="engine-button"
@@ -48,6 +50,8 @@
         />
       </div>
     </div>
+    <control-bar @contextmenu.stop="preventDefault" />
+    <right-menu v-model:visible="rightMenuVisible" :position="rightMenuPos" />
   </div>
 </template>
 
@@ -55,6 +59,8 @@
 import { defineComponent, reactive, toRefs, ref, onMounted } from "vue";
 import Application from "@/components/application/index.vue";
 import { resolveAppPos, initApps } from "@/utils/appUtils";
+import ControlBar from "@/components/controlBar/index.vue";
+import RightMenu from "@/components/menu/rightMenu.vue";
 import { config } from "@/config/config";
 import { useAppStore } from "@/stores";
 import _ from "lodash";
@@ -62,6 +68,8 @@ import _ from "lodash";
 export default defineComponent({
   components: {
     Application,
+    RightMenu,
+    ControlBar,
   },
   setup() {
     const backBoxRef = ref();
@@ -83,6 +91,8 @@ export default defineComponent({
       focus: false,
       moreUrlBoxVisible: false,
       apps: [] as any[],
+      rightMenuVisible: false,
+      rightMenuPos: { x: 0, y: 0 },
     });
 
     const onFocusInput = () => {
@@ -96,6 +106,7 @@ export default defineComponent({
     const onBodyClick = () => {
       // console.log("body", e);
       state.focus = false;
+      state.rightMenuVisible = false;
     };
 
     /**
@@ -135,6 +146,24 @@ export default defineComponent({
       });
     };
 
+    const rightClick = (e: MouseEvent) => {
+      state.rightMenuPos = {
+        x: e.x,
+        y: e.y,
+      };
+      state.rightMenuVisible = true;
+    };
+
+    const preventDefault = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
+    const onMouseDown = (e: MouseEvent) => {
+      if (e.button === 2) {
+        state.rightMenuVisible = false;
+      }
+    };
+
     onMounted(() => {
       if (appStore.apps.length === 0) {
         appStore.setApps(initApps(_.cloneDeep(config.defaultApps)));
@@ -153,6 +182,9 @@ export default defineComponent({
       onBodyClick,
       autoSortApps,
       sortChangedApp,
+      rightClick,
+      onMouseDown,
+      preventDefault,
     };
   },
 });
@@ -194,12 +226,6 @@ export default defineComponent({
     position: relative;
     height: 100vh;
     width: 100vw;
-    .setting-container {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      color: white;
-    }
 
     // 输入框
     .index-input-box {
@@ -211,7 +237,7 @@ export default defineComponent({
       width: 260px;
       padding: 10px 15px 10px 50px;
       box-sizing: border-box;
-      border-radius: 4px;
+      border-radius: 12px;
       position: absolute;
       background: rgba($color: #fff, $alpha: 0.65);
       transition: width 0.25s;
@@ -237,7 +263,7 @@ export default defineComponent({
       }
 
       &.focus {
-        width: 460px;
+        width: 660px;
       }
 
       .more-url-box {

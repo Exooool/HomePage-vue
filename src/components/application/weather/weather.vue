@@ -1,5 +1,5 @@
 <template>
-  <div class="weather-cell" @click="fullScreen">
+  <div class="weather__cell">
     <div class="position">罗湖</div>
     <div class="tempreture">14℃</div>
     <div class="description">
@@ -29,7 +29,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.weather-cell {
+.weather__cell {
   height: 100%;
   width: 100%;
   color: white;

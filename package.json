@@ -11,6 +11,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "ant-design-vue": "^3.2.17",
     "dayjs": "^1.11.7",
     "dexie": "^3.2.3",
     "lodash": "^4.17.21",
@@ -18,11 +19,11 @@
     "sass": "^1.58.3",
     "sass-loader": "^13.2.0",
     "vue": "^3.2.45",
-    "vue-router": "^4.1.6",
-    "vuestic-ui": "^1.6.1"
+    "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@iconify-json/ic": "^1.1.13",
+    "@iconify-json/system-uicons": "^1.1.8",
     "@iconify-json/wi": "^1.1.4",
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/node": "^18.11.12",
