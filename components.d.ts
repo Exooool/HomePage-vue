@@ -22,7 +22,7 @@ declare module '@vue/runtime-core' {
     ControlBar: typeof import('./src/components/controlBar/index.vue')['default']
     HomeMenu: typeof import('./src/components/menu/homeMenu.vue')['default']
     IIcBaselineSettings: typeof import('~icons/ic/baseline-settings')['default']
-    ISystemUiconsAlignVertical: typeof import('~icons/system-uicons/align-vertical')['default']
+    ISystemUiconsAlignVertical: typeof import("~icons/system-uicons/align-vertical")["default"]
     ISystemUiconsArrowLeft: typeof import('~icons/system-uicons/arrow-left')['default']
     ISystemUiconsArrowRight: typeof import('~icons/system-uicons/arrow-right')['default']
     ISystemUiconsHomeAlt: typeof import('~icons/system-uicons/home-alt')['default']
