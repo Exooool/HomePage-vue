@@ -20,6 +20,7 @@ declare module '@vue/runtime-core' {
     CalendarBox: typeof import('./src/components/application/calender/calendarBox.vue')['default']
     Controlbar: typeof import('./src/components/controlbar/index.vue')['default']
     ControlBar: typeof import('./src/components/controlBar/index.vue')['default']
+    Dropdown: typeof import('./src/components/dropdown/index.vue')['default']
     HomeMenu: typeof import('./src/components/menu/homeMenu.vue')['default']
     IIcBaselineSettings: typeof import('~icons/ic/baseline-settings')['default']
     ISystemUiconsAlignVertical: typeof import("~icons/system-uicons/align-vertical")["default"]

@@ -27,7 +27,12 @@
         >
           <img :src="searchEngineList[searchEngineIndex].img" />
         </button>
-        <input type="text" @focus="onFocusInput" />
+        <input
+          v-model="searchInputValue"
+          type="text"
+          @focus="onFocusInput"
+          @keydown.enter="searchInputEnter"
+        />
         <div class="more-url-box" :class="moreUrlBoxVisible ? 'show' : ''">
           <div
             v-for="(item, index) in searchEngineList"
@@ -77,16 +82,23 @@ export default defineComponent({
     const state = reactive({
       searchEngineList: [
         {
-          img: new URL("@/assets/searchIcon/baidu.png", import.meta.url),
-          baseUrl: "https://www.baidu.com/",
+          img: new URL(
+            "@/assets/searchIcon/baidu.png",
+            import.meta.url
+          ).toString(),
+          baseUrl: "https://www.baidu.com/s?wd=",
           title: "百度",
         },
         {
-          img: new URL("@/assets/searchIcon/google.png", import.meta.url),
-          baseUrl: "https://www.google.com/",
+          img: new URL(
+            "@/assets/searchIcon/google.png",
+            import.meta.url
+          ).toString(),
+          baseUrl: "https://www.google.com/search?q=",
           title: "谷歌",
         },
-      ] as Record<string, any>[],
+      ] as { img: string; baseUrl: string; title: string }[],
+      searchInputValue: "",
       searchEngineIndex: 0,
       focus: false,
       moreUrlBoxVisible: false,
@@ -164,6 +176,16 @@ export default defineComponent({
       }
     };
 
+    // 搜索框回车键执行
+    const searchInputEnter = () => {
+      window.open(
+        `${state.searchEngineList[state.searchEngineIndex].baseUrl}${
+          state.searchInputValue
+        }`,
+        "blank"
+      );
+    };
+
     onMounted(() => {
       if (appStore.apps.length === 0) {
         appStore.setApps(initApps(_.cloneDeep(config.defaultApps)));
@@ -185,6 +207,7 @@ export default defineComponent({
       rightClick,
       onMouseDown,
       preventDefault,
+      searchInputEnter,
     };
   },
 });
