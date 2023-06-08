@@ -35,6 +35,7 @@ declare module '@vue/runtime-core' {
     RightMenu: typeof import('./src/components/menu/rightMenu.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchInput: typeof import('./src/components/searchInput/index.vue')['default']
     Slidebar: typeof import('./src/components/slidebar/index.vue')['default']
     Todo: typeof import('./src/components/application/todo/todo.vue')['default']
     Weather: typeof import('./src/components/application/weather/weather.vue')['default']

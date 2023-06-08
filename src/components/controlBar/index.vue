@@ -6,7 +6,7 @@
       @click.stop="menuVisible = false"
     ></div>
     <home-menu v-model:visible="menuVisible" />
-    <div class="controlbar-content">
+    <div :class="['controlbar-content', visible ? '' : 'vanish']">
       <div
         class="controlbar-function-button"
         @click="switchMenu"
@@ -29,6 +29,14 @@ import HomeMenu from "../menu/homeMenu.vue";
 export default defineComponent({
   components: {
     HomeMenu,
+  },
+  props: {
+    visible: {
+      type: Boolean,
+      default: () => {
+        return true;
+      },
+    },
   },
   setup() {
     const state = reactive({
@@ -76,6 +84,14 @@ export default defineComponent({
     display: flex;
     align-items: center;
     padding: 0 6px;
+    transition: all 0.2s ease-in-out;
+    opacity: 1;
+    visibility: visible;
+
+    &.vanish {
+      opacity: 0;
+      visibility: hidden;
+    }
   }
 
   .controlbar-function-button {
