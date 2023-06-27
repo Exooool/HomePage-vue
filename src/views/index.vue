@@ -15,11 +15,16 @@
     <div class="index-content">
       <!-- 搜索框 -->
       <search-input v-model:focus="inputFocus" />
-      <div class="application-box" :class="inputFocus ? 'vanish' : ''">
+      <div
+        class="application-box"
+        :class="[inputFocus ? 'vanish' : '', appFocus ? 'focus' : '']"
+      >
         <application
           v-for="(item, index) in apps"
           :key="index"
           :data="item"
+          @dragMove="dragMove"
+          @dragDown="dragDown"
           @posChange="autoSortApps"
           @posChanged="sortChangedApp"
         />
@@ -53,6 +58,7 @@ export default defineComponent({
     const appStore = useAppStore();
     const state = reactive({
       inputFocus: false,
+      appFocus: false,
       apps: [] as any[],
       rightMenuVisible: false,
       rightMenuPos: { x: 0, y: 0 },
@@ -78,10 +84,7 @@ export default defineComponent({
       });
     };
 
-    /**
-     *
-     * @param {*} param0
-     */
+    // app位置结束改变后执行
     const sortChangedApp = ({ newApps, changeId }: any) => {
       // console.log('changed')
       const resolvedApps = resolveAppPos(newApps);
@@ -92,6 +95,10 @@ export default defineComponent({
         }
       });
     };
+
+    const dragMove = () => (state.appFocus = true);
+
+    const dragDown = () => (state.appFocus = false);
 
     const rightClick = (e: MouseEvent) => {
       state.rightMenuPos = {
@@ -123,6 +130,8 @@ export default defineComponent({
       ...toRefs(state),
       backBoxRef,
       appStore,
+      dragMove,
+      dragDown,
       onBodyClick,
       autoSortApps,
       sortChangedApp,
@@ -177,12 +186,17 @@ export default defineComponent({
       top: 50%;
       height: 480px;
       width: 960px;
+      border-radius: 12px;
       transform: translate(-50%, calc(-50% + 100px));
 
       &.vanish {
         transition: all 0.2s;
         opacity: 0;
         z-index: -1;
+      }
+
+      &.focus {
+        background: rgba(255, 255, 255, 0.15);
       }
     }
   }

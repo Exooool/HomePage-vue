@@ -104,6 +104,7 @@ export default defineComponent({
       const newIndex = adjustAppsPos(oldIndex, left, top);
       newApps = sortList(oldIndex, newIndex, appStore.apps);
       emit("posChange", { newApps, changeId: id });
+      emit("dragMove");
       // _.throttle(() => {}, 500);
     };
 
@@ -113,6 +114,7 @@ export default defineComponent({
       if (!newApps) newApps = _.cloneDeep(appStore.getApps);
 
       emit("posChanged", { newApps, changeId: id });
+      emit("dragDown");
       appStore.setApps(newApps);
       application.value.style.zIndex = 1;
       application.value.style.transition = "all 0.3s";

@@ -12,12 +12,29 @@
         @click="switchMenu"
         :style="[menuVisible ? 'background: white' : '']"
       >
-        <i-system-uicons-panel-sectioned
+        <iconify
+          icon="system-uicons:panel-sectioned"
           style="font-size: 18px; stroke-width: 2px"
         />
       </div>
       <div class="controlbar-divider"></div>
-      <div></div>
+      <div class="controlbar-app-classifies">
+        <div
+          :class="[
+            'classify-item',
+            classifyIndex === classify.id ? 'active' : '',
+          ]"
+          v-for="classify in classifyList"
+          :key="classify.id"
+          @click="classifyIndex = classify.id"
+        >
+          <iconify :icon="classify.classifyIcon" style="font-size: 28px" />
+          <span class="classify-name">{{ classify.classifyName }}</span>
+        </div>
+      </div>
+      <div class="classify-add">
+        <iconify icon="gala:add" style="font-size: 28px" />
+      </div>
     </div>
   </div>
 </template>
@@ -41,6 +58,29 @@ export default defineComponent({
   setup() {
     const state = reactive({
       menuVisible: false,
+      classifyIndex: 1,
+      classifyList: [
+        {
+          id: 1,
+          classifyName: "主页",
+          classifyIcon: "basil:home-solid",
+        },
+        {
+          id: 2,
+          classifyName: "设计",
+          classifyIcon: "basil:app-store-outline",
+        },
+        {
+          id: 3,
+          classifyName: "开发",
+          classifyIcon: "basil:desktop-outline",
+        },
+        {
+          id: 4,
+          classifyName: "影视",
+          classifyIcon: "basil:youtube-outline",
+        },
+      ],
     });
 
     const switchMenu = () => {
@@ -111,6 +151,55 @@ export default defineComponent({
     width: 2px;
     background: rgba($color: #d9ddde, $alpha: 0.65);
     margin: 0 12px;
+  }
+
+  .controlbar-app-classifies {
+    width: calc(100% - 112px);
+    display: flex;
+    justify-content: center;
+
+    .classify-item {
+      margin: 6px;
+      height: 42px;
+      width: 42px;
+      border-radius: 12px;
+      transition: all 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .classify-name {
+        position: absolute;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s;
+        transform: scale(0);
+        top: 0;
+        color: white;
+        font-size: 12px;
+      }
+
+      &.active,
+      &:hover {
+        background: rgba(217, 221, 222, 0.25);
+        .classify-name {
+          opacity: 1;
+          visibility: visible;
+          transform: scale(1) translateY(calc(-100% - 10px));
+        }
+      }
+    }
+  }
+
+  .classify-add {
+    height: 46px;
+    width: 46px;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

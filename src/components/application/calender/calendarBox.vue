@@ -198,6 +198,7 @@ export default defineComponent({
   background-color: #fff;
   display: flex;
   flex-direction: column;
+  user-select: none;
 
   &.visible {
     transform: scale(1);
