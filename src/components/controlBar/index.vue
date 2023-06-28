@@ -22,11 +22,11 @@
         <div
           :class="[
             'classify-item',
-            classifyIndex === classify.id ? 'active' : '',
+            settingStore.mainSwiperIndex === classifyIndex ? 'active' : '',
           ]"
-          v-for="classify in classifyList"
+          v-for="(classify, classifyIndex) in classifyList"
           :key="classify.id"
-          @click="classifyIndex = classify.id"
+          @click="classifyMenuClick(classifyIndex)"
         >
           <iconify :icon="classify.classifyIcon" style="font-size: 28px" />
           <span class="classify-name">{{ classify.classifyName }}</span>
@@ -41,6 +41,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from "vue";
+import { useSettingStore } from "@/stores";
 import HomeMenu from "../menu/homeMenu.vue";
 
 export default defineComponent({
@@ -56,14 +57,14 @@ export default defineComponent({
     },
   },
   setup() {
+    const settingStore = useSettingStore();
     const state = reactive({
       menuVisible: false,
-      classifyIndex: 1,
       classifyList: [
         {
           id: 1,
           classifyName: "主页",
-          classifyIcon: "basil:home-solid",
+          classifyIcon: "basil:home-outline",
         },
         {
           id: 2,
@@ -87,9 +88,15 @@ export default defineComponent({
       state.menuVisible = !state.menuVisible;
     };
 
+    const classifyMenuClick = (index: number) => {
+      settingStore.setMainSwiperIndex(index);
+    };
+
     return {
       ...toRefs(state),
       switchMenu,
+      settingStore,
+      classifyMenuClick,
     };
   },
 });

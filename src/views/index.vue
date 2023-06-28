@@ -12,22 +12,34 @@
         src="https://dogefs.s3.ladydaily.com/~/source/unsplash/photo-1672508644335-e2097539f42f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
       />
     </div>
-    <div class="index-content">
+    <div
+      ref="indexContentRef"
+      class="index-content"
+      @mousedown="indexContentMouseDown"
+    >
       <!-- 搜索框 -->
       <search-input v-model:focus="inputFocus" />
       <div
-        class="application-box"
-        :class="[inputFocus ? 'vanish' : '', appFocus ? 'focus' : '']"
+        ref="swiperListRef"
+        class="application-swiper-list"
+        :style="`transform: translateX(${
+          -swiperClientWidth * swpierIndex
+        }px);transition: all 0.3s`"
       >
-        <application
-          v-for="(item, index) in apps"
-          :key="index"
-          :data="item"
-          @dragMove="dragMove"
-          @dragDown="dragDown"
-          @posChange="autoSortApps"
-          @posChanged="sortChangedApp"
-        />
+        <div
+          class="application-box"
+          :class="[inputFocus ? 'vanish' : '', appFocus ? 'focus' : '']"
+        >
+          <application
+            v-for="(item, index) in apps"
+            :key="index"
+            :data="item"
+            @dragMove="dragMove"
+            @dragDown="dragDown"
+            @posChange="autoSortApps"
+            @posChanged="sortChangedApp"
+          />
+        </div>
       </div>
     </div>
     <control-bar :visible="!inputFocus" @contextmenu.stop="preventDefault" />
@@ -36,14 +48,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, ref, onMounted } from "vue";
+import {
+  defineComponent,
+  reactive,
+  toRefs,
+  ref,
+  onMounted,
+  computed,
+} from "vue";
 import Application from "@/components/application/index.vue";
 import SearchInput from "@/components/searchInput/index.vue";
 import { resolveAppPos, initApps } from "@/utils/appUtils";
 import ControlBar from "@/components/controlBar/index.vue";
 import RightMenu from "@/components/menu/rightMenu.vue";
 import { config } from "@/config/config";
-import { useAppStore } from "@/stores";
+import { useAppStore, useSettingStore } from "@/stores";
 import _ from "lodash";
 
 export default defineComponent({
@@ -55,13 +74,21 @@ export default defineComponent({
   },
   setup() {
     const backBoxRef = ref();
+    const swiperListRef = ref();
+    const indexContentRef = ref();
     const appStore = useAppStore();
+    const settingStore = useSettingStore();
+    const { setMainSwiperIndex } = settingStore;
+    const swpierIndex = computed(() => settingStore.mainSwiperIndex);
     const state = reactive({
       inputFocus: false,
       appFocus: false,
       apps: [] as any[],
       rightMenuVisible: false,
       rightMenuPos: { x: 0, y: 0 },
+      swiperX: 0,
+      swiperList: [{}, {}],
+      swiperClientWidth: 0,
     });
 
     const onBodyClick = () => {
@@ -118,17 +145,57 @@ export default defineComponent({
       }
     };
 
+    // 控制轮播图的左右滑动
+    let clientX = 0;
+    let diffX = 0;
+
+    const indexContentMouseDown = (e: MouseEvent) => {
+      clientX = e.clientX;
+      swiperListRef.value.style.transition = "none";
+      window.addEventListener("mousemove", indexContentMouseMove);
+      window.addEventListener("mouseup", indexContentMouseUp);
+    };
+
+    const indexContentMouseMove = (e: MouseEvent) => {
+      diffX = e.clientX - clientX;
+      state.swiperX = -state.swiperClientWidth * swpierIndex.value + diffX;
+
+      swiperListRef.value.style.transform = `translateX(${state.swiperX}px)`;
+    };
+
+    const indexContentMouseUp = () => {
+      if (diffX > 100 && swpierIndex.value > 0) {
+        setMainSwiperIndex(swpierIndex.value - 1);
+      } else if (
+        diffX < -100 &&
+        swpierIndex.value < state.swiperList.length - 1
+      ) {
+        setMainSwiperIndex(swpierIndex.value + 1);
+      }
+
+      swiperListRef.value.style.transition = "all 0.3s";
+      swiperListRef.value.style.transform = `translateX(${
+        -state.swiperClientWidth * swpierIndex.value
+      }px)`;
+      window.removeEventListener("mousemove", indexContentMouseMove);
+    };
+
     onMounted(() => {
       if (appStore.apps.length === 0) {
         appStore.setApps(initApps(_.cloneDeep(config.defaultApps)));
         console.log(appStore.getApps);
       }
       state.apps = appStore.getApps;
+
+      // 获取轮播图父级宽度
+      state.swiperClientWidth = indexContentRef.value.clientWidth;
     });
 
     return {
       ...toRefs(state),
       backBoxRef,
+      swiperListRef,
+      indexContentRef,
       appStore,
       dragMove,
       dragDown,
@@ -138,6 +205,8 @@ export default defineComponent({
       rightClick,
       onMouseDown,
       preventDefault,
+      indexContentMouseDown,
+      swpierIndex,
     };
   },
 });
@@ -179,6 +248,11 @@ export default defineComponent({
     position: relative;
     height: 100vh;
     width: 100vw;
+
+    .application-swiper-list {
+      height: 100%;
+      width: 100%;
+    }
 
     .application-box {
       position: absolute;
