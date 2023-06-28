@@ -5,8 +5,8 @@
     :class="['application-item', data?.size]"
     :style="`transform: translate(${data?.x}px,${data?.y}px)`"
     @contextmenu.stop="rightClick"
-    @mousedown="onMouseDown"
-    @mouseup="onMouseUp"
+    @mousedown.stop="onMouseDown"
+    @mouseup.stop="onMouseUp"
   >
     <div class="application-content">
       <i v-if="data?.icon" class="application-icon">
