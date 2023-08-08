@@ -5,9 +5,11 @@ import type { app } from "@/types/app";
 const useAppStore = defineStore("application", {
   state: () => ({
     apps: [] as app[],
+    categrories: [],
   }),
   getters: {
     getApps: (state) => resolveAppPos(state.apps),
+    getCategrories: (state) => state.categrories,
   },
   actions: {
     setApps(apps: app[]) {

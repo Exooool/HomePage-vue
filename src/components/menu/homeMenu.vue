@@ -1,4 +1,9 @@
 <template>
+  <div
+    v-if="visible"
+    class="mask"
+    @click.stop="$emit('update:visible', false)"
+  ></div>
   <div :class="['home-menu-box', visible ? 'visible' : '']">
     <div class="setting-container">
       <!-- 基本 -->
@@ -108,6 +113,7 @@ export default defineComponent({
       default: () => true,
     },
   },
+  emits: ["update:visible"],
   setup() {
     const state = reactive({
       menuActive: 0,
@@ -287,9 +293,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.home-menu-box {
+.mask {
+  pointer-events: all;
   position: absolute;
+  height: 100%;
+  width: 100%;
   top: 0;
+  left: 0;
+  background: rgba($color: #000000, $alpha: 0.35);
+}
+.home-menu-box {
+  z-index: 1;
+  position: absolute;
+  pointer-events: all;
+  bottom: 70px;
   left: 50%;
   height: 65vh;
   width: 65vw;
@@ -302,14 +319,17 @@ export default defineComponent({
   background: rgba($color: #fff, $alpha: 0.85);
   backdrop-filter: blur(10px);
   transform-origin: left bottom;
-  transform: translate(-50%, calc(-100% - 12px)) scale(0.2);
+  // transform: translate(-50%, calc(-100% - 12px)) scale(0.2);
+
+  // transform: translate(-50%, calc(-100% - 12px));
+  transform: translate(-50%, 12px) scale(0.2);
   transition: all 0.25s;
   opacity: 0;
   overflow: hidden;
   visibility: hidden;
 
   &.visible {
-    transform: translate(-50%, calc(-100% - 12px));
+    transform: translateX(-50%);
     opacity: 1;
     visibility: visible;
   }

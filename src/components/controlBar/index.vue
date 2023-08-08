@@ -1,41 +1,46 @@
 <template>
   <div class="controlbar-wrapper">
-    <div
-      v-if="menuVisible"
-      class="mask"
-      @click.stop="menuVisible = false"
-    ></div>
-    <home-menu v-model:visible="menuVisible" />
-    <div :class="['controlbar-content', visible ? '' : 'vanish']">
-      <div
-        class="controlbar-function-button"
-        @click="switchMenu"
-        :style="[menuVisible ? 'background: white' : '']"
-      >
-        <iconify
-          icon="system-uicons:panel-sectioned"
-          style="font-size: 18px; stroke-width: 2px"
-        />
-      </div>
-      <div class="controlbar-divider"></div>
-      <div class="controlbar-app-classifies">
+    <div :class="['controlbar-content-wrapper', barVisible ? '' : 'vanish']">
+      <div :class="['controlbar-content', visible ? '' : 'vanish']">
         <div
-          :class="[
-            'classify-item',
-            settingStore.mainSwiperIndex === classifyIndex ? 'active' : '',
-          ]"
-          v-for="(classify, classifyIndex) in classifyList"
-          :key="classify.id"
-          @click="classifyMenuClick(classifyIndex)"
+          class="controlbar-function-button"
+          @click="switchMenu"
+          :style="[menuVisible ? 'background: white' : '']"
         >
-          <iconify :icon="classify.classifyIcon" style="font-size: 28px" />
-          <span class="classify-name">{{ classify.classifyName }}</span>
+          <iconify
+            icon="system-uicons:panel-sectioned"
+            style="font-size: 18px; stroke-width: 2px"
+          />
+        </div>
+        <div class="controlbar-divider"></div>
+        <div class="controlbar-app-classifies">
+          <div
+            :class="[
+              'classify-item',
+              settingStore.mainSwiperIndex === classifyIndex ? 'active' : '',
+            ]"
+            v-for="(classify, classifyIndex) in classifyList"
+            :key="classify.id"
+            @click="classifyMenuClick(classifyIndex)"
+          >
+            <iconify :icon="classify.classifyIcon" style="font-size: 28px" />
+            <span class="classify-name">{{ classify.classifyName }}</span>
+          </div>
+        </div>
+        <div
+          class="classify-add"
+          @click="
+            () => {
+              barVisible = !barVisible;
+              $emit('clickAdd');
+            }
+          "
+        >
+          <iconify icon="gala:add" style="font-size: 28px" />
         </div>
       </div>
-      <div class="classify-add">
-        <iconify icon="gala:add" style="font-size: 28px" />
-      </div>
     </div>
+    <home-menu v-model:visible="menuVisible" />
   </div>
 </template>
 
@@ -56,9 +61,11 @@ export default defineComponent({
       },
     },
   },
+  emits: ["clickAdd"],
   setup() {
     const settingStore = useSettingStore();
     const state = reactive({
+      barVisible: true,
       menuVisible: false,
       classifyList: [
         {
@@ -103,24 +110,41 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mask {
-  position: fixed;
-  height: 100vh;
-  width: calc(100vw + 320px);
-  top: 0;
-  left: 0;
-  transform: translate(calc((-100vw + 320px) / 2), calc(-100% + 58px));
-  // background: rgba($color: #d9ddde, $alpha: 0.35);
-}
 .controlbar-wrapper {
-  position: fixed;
-  left: 50%;
-  bottom: 6px;
-  transform: translateX(-50%);
-  height: 52px;
-  width: 60vw;
-  max-width: 860px;
-  min-width: 320px;
+  z-index: 1;
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+
+  .controlbar-content-wrapper {
+    position: absolute;
+    pointer-events: all;
+    left: 50%;
+    bottom: 6px;
+    transform: translateX(-50%);
+    height: 52px;
+    width: 60vw;
+    max-width: 860px;
+    min-width: 320px;
+    transition: all 0.8s;
+    opacity: 1;
+
+    &.vanish {
+      overflow: hidden;
+      width: 0;
+      opacity: 0;
+      transition-delay: 0.1s;
+      .controlbar-function-button,
+      .controlbar-divider,
+      .controlbar-app-classifies,
+      .classify-add {
+        visibility: hidden;
+      }
+    }
+  }
 
   .controlbar-content {
     height: 100%;

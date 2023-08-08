@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="index-container"
-    @contextmenu.prevent="rightClick"
-    @mousedown="onMouseDown"
-    @click="onBodyClick"
-  >
+  <div class="index-container-wrapper">
     <div class="background-box" :class="inputFocus ? 'focus' : ''">
       <!-- <video id="backVideo" autoplay loop muted></video> -->
       <img
@@ -13,37 +8,54 @@
       />
     </div>
     <div
-      ref="indexContentRef"
-      class="index-content"
-      @mousedown="indexContentMouseDown"
+      :class="['index-container', dialogVisible ? 'is-collapse' : '']"
+      @contextmenu.prevent="rightClick"
+      @mousedown="onMouseDown"
+      @click="onBodyClick"
     >
-      <!-- 搜索框 -->
-      <search-input v-model:focus="inputFocus" />
       <div
-        ref="swiperListRef"
-        class="application-swiper-list"
-        :style="`transform: translateX(${
-          -swiperClientWidth * swpierIndex
-        }px);transition: all 0.3s`"
+        ref="indexContentRef"
+        class="index-content"
+        @mousedown="indexContentMouseDown"
       >
+        <!-- 搜索框 -->
+        <search-input v-model:focus="inputFocus" />
         <div
-          class="application-box"
-          :class="[inputFocus ? 'vanish' : '', appFocus ? 'focus' : '']"
+          ref="swiperListRef"
+          class="application-swiper-list"
+          :style="`transform: translateX(${
+            -swiperClientWidth * swpierIndex
+          }px);transition: all 0.3s`"
         >
-          <application
-            v-for="(item, index) in apps"
-            :key="index"
-            :data="item"
-            @dragMove="dragMove"
-            @dragDown="dragDown"
-            @posChange="autoSortApps"
-            @posChanged="sortChangedApp"
-          />
+          <div
+            class="application-box"
+            :class="[inputFocus ? 'vanish' : '', appFocus ? 'focus' : '']"
+          >
+            <application
+              v-for="(item, index) in apps"
+              :key="index"
+              :data="item"
+              @dragMove="dragMove"
+              @dragDown="dragDown"
+              @posChange="autoSortApps"
+              @posChanged="sortChangedApp"
+            />
+          </div>
         </div>
       </div>
+      <control-bar
+        :visible="!inputFocus"
+        @contextmenu.stop="preventDefault"
+        @clickAdd="onControlBarAdd"
+      />
+      <right-menu v-model:visible="rightMenuVisible" :position="rightMenuPos" />
+      <!-- <app-browser-dialog v-model:visible="dialogVisible" /> -->
     </div>
-    <control-bar :visible="!inputFocus" @contextmenu.stop="preventDefault" />
-    <right-menu v-model:visible="rightMenuVisible" :position="rightMenuPos" />
+    <div :class="['bottom-poper', dialogVisible ? 'is-active' : '']">
+      <div class="search-input-box">
+        <input type="text" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -58,6 +70,7 @@ import {
 } from "vue";
 import Application from "@/components/application/index.vue";
 import SearchInput from "@/components/searchInput/index.vue";
+import AppBrowserDialog from "@/components/appBrowser/index.vue";
 import { resolveAppPos, initApps } from "@/utils/appUtils";
 import ControlBar from "@/components/controlBar/index.vue";
 import RightMenu from "@/components/menu/rightMenu.vue";
@@ -71,6 +84,7 @@ export default defineComponent({
     Application,
     RightMenu,
     ControlBar,
+    AppBrowserDialog,
   },
   setup() {
     const backBoxRef = ref();
@@ -89,6 +103,7 @@ export default defineComponent({
       swiperX: 0,
       swiperList: [{}, {}],
       swiperClientWidth: 0,
+      dialogVisible: false,
     });
 
     const onBodyClick = () => {
@@ -180,6 +195,11 @@ export default defineComponent({
       window.removeEventListener("mousemove", indexContentMouseMove);
     };
 
+    const onControlBarAdd = () => {
+      console.log("add");
+      state.dialogVisible = !state.dialogVisible;
+    };
+
     onMounted(() => {
       if (appStore.apps.length === 0) {
         appStore.setApps(initApps(_.cloneDeep(config.defaultApps)));
@@ -207,21 +227,22 @@ export default defineComponent({
       preventDefault,
       indexContentMouseDown,
       swpierIndex,
+      onControlBarAdd,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-.index-container {
+.index-container-wrapper {
   position: relative;
   height: 100vh;
-  overflow: hidden;
-  // 背景
+  width: 100vw;
+
   .background-box {
-    position: fixed;
-    height: 100vh;
-    width: 100vw;
+    position: absolute;
+    height: 100%;
+    width: 100%;
     overflow: hidden;
     z-index: -1;
     #backImg {
@@ -243,11 +264,23 @@ export default defineComponent({
       transform: scale(1.1);
     }
   }
+}
+.index-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  transition: height ease-in-out 0.2s;
+  overflow: hidden;
+
+  &.is-collapse {
+    height: calc(100% - 260px);
+  }
+  // 背景
 
   .index-content {
     position: relative;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
 
     .application-swiper-list {
       height: 100%;
@@ -272,6 +305,71 @@ export default defineComponent({
       &.focus {
         background: rgba(255, 255, 255, 0.15);
       }
+    }
+  }
+}
+
+.bottom-poper {
+  height: 0%;
+  width: 100%;
+  position: relative;
+  transition: height ease-in-out 0.2s;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  visibility: hidden;
+  overflow: hidden;
+
+  &.is-active {
+    height: 260px;
+    visibility: visible;
+    .search-input-box {
+      width: 420px;
+      visibility: visible;
+    }
+  }
+
+  .search-input-box {
+    position: absolute;
+    left: 50%;
+    top: 6px;
+    height: 36px;
+    width: 0px;
+    border: 2px solid #555555;
+    background: rgba(100, 100, 100, 0.55);
+    backdrop-filter: blur(2px);
+    border-radius: 8px;
+    color: #fff;
+    transform: translateX(-50%);
+    transition: all ease-in-out 0.2s;
+    transition-delay: 0.4s;
+    visibility: hidden;
+
+    &::after {
+      position: absolute;
+      content: "";
+      height: calc(100% + 4px);
+      width: calc(100% + 4px);
+      border-bottom: 2px solid #fff;
+      left: -2px;
+      bottom: -2px;
+      // background: #fff;
+      z-index: 2;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      transition: 0.35s;
+    }
+
+    &:hover::after {
+      width: 0%;
+      border-bottom-right-radius: 0px;
+      transition: 0.2s 0.2s ease-out;
+    }
+
+    & > input {
+      height: 100%;
+      width: 100%;
+      padding: 6px 12px;
+      font-size: 16px;
     }
   }
 }
