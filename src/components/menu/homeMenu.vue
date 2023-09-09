@@ -307,7 +307,7 @@ export default defineComponent({
   position: absolute;
   pointer-events: all;
   bottom: 70px;
-  left: 50%;
+  right: 30%;
   height: 65vh;
   width: 65vw;
   display: flex;
@@ -318,18 +318,17 @@ export default defineComponent({
   border-radius: 12px;
   background: rgba($color: #fff, $alpha: 0.85);
   backdrop-filter: blur(10px);
-  transform-origin: left bottom;
-  // transform: translate(-50%, calc(-100% - 12px)) scale(0.2);
-
-  // transform: translate(-50%, calc(-100% - 12px));
-  transform: translate(-50%, 12px) scale(0.2);
+  transform-origin: right bottom;
+  transform: translate(50%, 12px) scale(0.2);
   transition: all 0.25s;
   opacity: 0;
   overflow: hidden;
   visibility: hidden;
 
   &.visible {
-    transform: translateX(-50%);
+    right: 50%;
+    bottom: 50%;
+    transform: translate(50%, 50%);
     opacity: 1;
     visibility: visible;
   }

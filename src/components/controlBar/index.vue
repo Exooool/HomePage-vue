@@ -1,7 +1,7 @@
 <template>
   <div class="controlbar-wrapper">
-    <div :class="['controlbar-content-wrapper', barVisible ? '' : 'vanish']">
-      <div :class="['controlbar-content', visible ? '' : 'vanish']">
+    <div class="controlbar-content-wrapper">
+      <div class="controlbar-content">
         <div
           class="controlbar-function-button"
           @click="switchMenu"
@@ -11,32 +11,6 @@
             icon="system-uicons:panel-sectioned"
             style="font-size: 18px; stroke-width: 2px"
           />
-        </div>
-        <div class="controlbar-divider"></div>
-        <div class="controlbar-app-classifies">
-          <div
-            :class="[
-              'classify-item',
-              settingStore.mainSwiperIndex === classifyIndex ? 'active' : '',
-            ]"
-            v-for="(classify, classifyIndex) in classifyList"
-            :key="classify.id"
-            @click="classifyMenuClick(classifyIndex)"
-          >
-            <iconify :icon="classify.classifyIcon" style="font-size: 28px" />
-            <span class="classify-name">{{ classify.classifyName }}</span>
-          </div>
-        </div>
-        <div
-          class="classify-add"
-          @click="
-            () => {
-              barVisible = !barVisible;
-              $emit('clickAdd');
-            }
-          "
-        >
-          <iconify icon="gala:add" style="font-size: 28px" />
         </div>
       </div>
     </div>
@@ -65,7 +39,6 @@ export default defineComponent({
   setup() {
     const settingStore = useSettingStore();
     const state = reactive({
-      barVisible: true,
       menuVisible: false,
       classifyList: [
         {
@@ -122,47 +95,25 @@ export default defineComponent({
   .controlbar-content-wrapper {
     position: absolute;
     pointer-events: all;
-    left: 50%;
-    bottom: 6px;
-    transform: translateX(-50%);
+    right: 24px;
+    bottom: 12px;
     height: 52px;
-    width: 60vw;
-    max-width: 860px;
-    min-width: 320px;
     transition: all 0.8s;
     opacity: 1;
-
-    &.vanish {
-      overflow: hidden;
-      width: 0;
-      opacity: 0;
-      transition-delay: 0.1s;
-      .controlbar-function-button,
-      .controlbar-divider,
-      .controlbar-app-classifies,
-      .classify-add {
-        visibility: hidden;
-      }
-    }
   }
 
   .controlbar-content {
     height: 100%;
     border-radius: 16px;
-    border: 1px solid #d9ddde;
-    background: rgba($color: #d9ddde, $alpha: 0.65);
-    backdrop-filter: blur(5px);
+    // border: 1px solid #d9ddde;
+    // background: rgba($color: #d9ddde, $alpha: 0.65);
+    // backdrop-filter: blur(5px);
     display: flex;
     align-items: center;
     padding: 0 6px;
     transition: all 0.2s ease-in-out;
     opacity: 1;
     visibility: visible;
-
-    &.vanish {
-      opacity: 0;
-      visibility: hidden;
-    }
   }
 
   .controlbar-function-button {

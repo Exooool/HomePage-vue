@@ -8,7 +8,7 @@
       />
     </div>
     <div
-      :class="['index-container', dialogVisible ? 'is-collapse' : '']"
+      class="index-container"
       @contextmenu.prevent="rightClick"
       @mousedown="onMouseDown"
       @click="onBodyClick"
@@ -43,18 +43,20 @@
           </div>
         </div>
       </div>
-      <control-bar
-        :visible="!inputFocus"
-        @contextmenu.stop="preventDefault"
-        @clickAdd="onControlBarAdd"
-      />
+      <control-bar v-show="!inputFocus" @contextmenu.stop="preventDefault" />
       <right-menu v-model:visible="rightMenuVisible" :position="rightMenuPos" />
-      <!-- <app-browser-dialog v-model:visible="dialogVisible" /> -->
-    </div>
-    <div :class="['bottom-poper', dialogVisible ? 'is-active' : '']">
-      <div class="search-input-box">
-        <input type="text" />
-      </div>
+      <app-browser-dialog v-model:visible="dialogVisible" />
+      <button
+        v-show="!inputFocus"
+        class="concentration-control"
+        @click="concentrationVisible = true"
+      >
+        <iconify
+          icon="lucide:bird"
+          style="font-size: 24px; stroke-width: 2px"
+        />
+      </button>
+      <Concentration v-model="concentrationVisible" />
     </div>
   </div>
 </template>
@@ -76,6 +78,7 @@ import ControlBar from "@/components/controlBar/index.vue";
 import RightMenu from "@/components/menu/rightMenu.vue";
 import { config } from "@/config/config";
 import { useAppStore, useSettingStore } from "@/stores";
+import Concentration from "@/components/concentration/index.vue";
 import _ from "lodash";
 
 export default defineComponent({
@@ -85,6 +88,7 @@ export default defineComponent({
     RightMenu,
     ControlBar,
     AppBrowserDialog,
+    Concentration,
   },
   setup() {
     const backBoxRef = ref();
@@ -104,6 +108,7 @@ export default defineComponent({
       swiperList: [{}, {}],
       swiperClientWidth: 0,
       dialogVisible: false,
+      concentrationVisible: false,
     });
 
     const onBodyClick = () => {
@@ -195,10 +200,10 @@ export default defineComponent({
       window.removeEventListener("mousemove", indexContentMouseMove);
     };
 
-    const onControlBarAdd = () => {
-      console.log("add");
-      state.dialogVisible = !state.dialogVisible;
-    };
+    const onControlBarAdd = () => {};
+
+    // 专注模式
+    const concentrationMode = () => {};
 
     onMounted(() => {
       if (appStore.apps.length === 0) {
@@ -228,6 +233,7 @@ export default defineComponent({
       indexContentMouseDown,
       swpierIndex,
       onControlBarAdd,
+      concentrationMode,
     };
   },
 });
@@ -244,7 +250,6 @@ export default defineComponent({
     height: 100%;
     width: 100%;
     overflow: hidden;
-    z-index: -1;
     #backImg {
       position: absolute;
       overflow: hidden;
@@ -272,9 +277,6 @@ export default defineComponent({
   transition: height ease-in-out 0.2s;
   overflow: hidden;
 
-  &.is-collapse {
-    height: calc(100% - 260px);
-  }
   // 背景
 
   .index-content {
@@ -307,70 +309,14 @@ export default defineComponent({
       }
     }
   }
-}
 
-.bottom-poper {
-  height: 0%;
-  width: 100%;
-  position: relative;
-  transition: height ease-in-out 0.2s;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  visibility: hidden;
-  overflow: hidden;
-
-  &.is-active {
-    height: 260px;
-    visibility: visible;
-    .search-input-box {
-      width: 420px;
-      visibility: visible;
-    }
-  }
-
-  .search-input-box {
+  .concentration-control {
     position: absolute;
-    left: 50%;
-    top: 6px;
-    height: 36px;
-    width: 0px;
-    border: 2px solid #555555;
-    background: rgba(100, 100, 100, 0.55);
-    backdrop-filter: blur(2px);
-    border-radius: 8px;
-    color: #fff;
-    transform: translateX(-50%);
-    transition: all ease-in-out 0.2s;
-    transition-delay: 0.4s;
-    visibility: hidden;
-
-    &::after {
-      position: absolute;
-      content: "";
-      height: calc(100% + 4px);
-      width: calc(100% + 4px);
-      border-bottom: 2px solid #fff;
-      left: -2px;
-      bottom: -2px;
-      // background: #fff;
-      z-index: 2;
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
-      transition: 0.35s;
-    }
-
-    &:hover::after {
-      width: 0%;
-      border-bottom-right-radius: 0px;
-      transition: 0.2s 0.2s ease-out;
-    }
-
-    & > input {
-      height: 100%;
-      width: 100%;
-      padding: 6px 12px;
-      font-size: 16px;
-    }
+    color: rgba(217, 221, 222, 0.8);
+    left: 24px;
+    bottom: 12px;
+    padding: 0;
+    cursor: pointer;
   }
 }
 </style>

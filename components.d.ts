@@ -22,6 +22,7 @@ declare module '@vue/runtime-core' {
     ATabs: typeof import('ant-design-vue/es')['Tabs']
     Calendar: typeof import('./src/components/application/calender/calendar.vue')['default']
     CalendarBox: typeof import('./src/components/application/calender/calendarBox.vue')['default']
+    Concentration: typeof import('./src/components/concentration/index.vue')['default']
     Controlbar: typeof import('./src/components/controlbar/index.vue')['default']
     ControlBar: typeof import('./src/components/controlBar/index.vue')['default']
     Dropdown: typeof import('./src/components/dropdown/index.vue')['default']
