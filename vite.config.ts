@@ -24,7 +24,12 @@ export default defineConfig({
       },
     }),
     Components({
-      resolvers: [IconsResolver(), AntDesignVueResolver()],
+      resolvers: [
+        IconsResolver(),
+        AntDesignVueResolver({
+          importStyle: false, // css in js
+        }),
+      ],
     }),
     Icons(),
   ],

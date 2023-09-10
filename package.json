@@ -11,7 +11,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "ant-design-vue": "^3.2.17",
+    "ant-design-vue": "^4.0.2",
     "dayjs": "^1.11.7",
     "dexie": "^3.2.3",
     "lodash": "^4.17.21",
